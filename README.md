@@ -84,3 +84,12 @@ go test -cover ./...
 - Go 1.21+
 - chi router
 - caarlos0/env 配置库
+
+## 许可证
+
+本项目采用 [GNU General Public License v3.0](LICENSE) 许可证。
+
+你可以自由使用、修改和分发本软件，但必须：
+- 保留原作者的版权声明
+- 以相同许可证发布修改后的版本
+- 明确标注所有修改内容
