@@ -47,9 +47,60 @@ go build -o anniversary.exe ./cmd/server
 ./anniversary.exe
 ```
 
-访问 http://localhost:8080
+访问 `http://localhost:8080`
 
-## 配置
+## Docker 部署
+
+使用预编译方式部署，镜像基于 Alpine，体积小、启动快。
+
+### 快速部署
+
+```bash
+# Windows PowerShell
+./build.ps1
+docker compose up -d
+
+# Linux/Mac
+chmod +x build.sh && ./build.sh
+docker compose up -d
+```
+
+### 手动步骤
+
+```bash
+# 1. 编译 Linux 二进制文件
+GOOS=linux GOARCH=amd64 go build -o server ./cmd/server
+
+# 2. 构建镜像
+docker compose build
+
+# 3. 启动服务
+docker compose up -d
+```
+
+### 配置
+
+通过环境变量或 `.env` 文件配置：
+
+| 变量 | 说明 | 默认值 |
+|------|------|--------|
+| `CSRF_KEY` | CSRF 密钥 | 生产环境必须修改 |
+| `SESSION_SECRET` | Session 密钥 | 生产环境必须修改 |
+| `PORT` | 服务端口 | `8080` |
+| `LOG_LEVEL` | 日志级别 | `info` |
+
+### 运维命令
+
+```bash
+docker compose logs -f        # 查看日志
+docker compose restart        # 重启服务
+docker compose down           # 停止服务
+docker compose up -d --build  # 重新构建并启动
+```
+
+数据持久化在 `./data` 目录。
+
+## 环境变量
 
 通过环境变量配置：
 
