@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var validID = regexp.MustCompile(`^[a-zA-Z0-9]{8}$`)
+var validID = regexp.MustCompile(`^[a-zA-Z0-9]{8,12}$`)
 
 // isValidID 验证ID格式
 func isValidID(id string) bool {
