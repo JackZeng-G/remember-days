@@ -1,0 +1,10 @@
+# 编译产物
+anniversary.exe
+*.exe
+
+# 日志文件
+anniversary.log
+*.log
+
+# 数据文件
+data/
