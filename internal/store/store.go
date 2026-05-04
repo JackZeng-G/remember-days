@@ -7,6 +7,5 @@ type AnniversaryStore interface {
 	Load() ([]model.Anniversary, error)
 	Save(anniversaries []model.Anniversary) error
 	Add(ann model.Anniversary) error
-	Update(ann model.Anniversary) error
 	Delete(id string) error
 }

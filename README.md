@@ -19,7 +19,7 @@
 - 温馨优雅的 UI 设计，时间线卡片布局
 - 倒计时提醒，临近纪念日自动高亮
 - CSRF 防护 · XSS 防御 · 数据文件加密存储
-- 单二进制部署，Docker 一键启动
+- 单二进制部署，资源内嵌，无外部依赖
 
 ## 🚀 快速开始
 
@@ -32,7 +32,6 @@ go run .
 ## 🐳 Docker 部署
 
 ```bash
-# 编译 + 构建 + 启动
 GOOS=linux GOARCH=amd64 go build -o build/remember .
 docker compose up -d --build
 ```
@@ -72,16 +71,16 @@ go test -cover ./...      # 覆盖率
 ## 📁 项目结构
 
 ```
-├── main.go               # 入口
-├── internal/             # 后端（Go 语言约定）
+├── main.go               # 入口（内嵌 web 资源）
+├── internal/             # 后端
 │   ├── config/           #   配置
 │   ├── handler/          #   路由与中间件
 │   ├── model/            #   数据模型
 │   ├── service/          #   业务逻辑
 │   └── store/            #   存储层
-├── web/                  # 前端
-│   ├── templates/        #   HTML 模板
-│   └── static/           #   样式
+├── web/                  # 前端源文件（编译时嵌入二进制）
+│   ├── templates/
+│   └── static/
 ├── Dockerfile
 └── docker-compose.yml
 ```

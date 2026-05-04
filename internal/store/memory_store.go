@@ -53,18 +53,6 @@ func (s *MemoryStore) Add(ann model.Anniversary) error {
 	return nil
 }
 
-// Update 更新纪念日
-func (s *MemoryStore) Update(ann model.Anniversary) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	if _, exists := s.data[ann.ID]; !exists {
-		return fmt.Errorf("纪念日不存在: %s", ann.ID)
-	}
-
-	s.data[ann.ID] = ann
-	return nil
-}
 
 // Delete 删除纪念日
 func (s *MemoryStore) Delete(id string) error {

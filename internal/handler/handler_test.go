@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -18,7 +19,8 @@ func setupTestHandler() (*chi.Mux, error) {
 	memStore := store.NewMemoryStore()
 	svc := service.New(memStore)
 
-	tmpl, err := NewTemplateRenderer("../../web/templates/*.html")
+	webFS := os.DirFS("../..")
+	tmpl, err := NewTemplateRendererFromFS(webFS)
 	if err != nil {
 		return nil, err
 	}

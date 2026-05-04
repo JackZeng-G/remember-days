@@ -90,22 +90,6 @@ func (s *JSONStore) Add(ann model.Anniversary) error {
 	return s.Save(anns)
 }
 
-// Update 更新纪念日
-func (s *JSONStore) Update(ann model.Anniversary) error {
-	anns, err := s.Load()
-	if err != nil {
-		return err
-	}
-
-	for i, a := range anns {
-		if a.ID == ann.ID {
-			anns[i] = ann
-			return s.Save(anns)
-		}
-	}
-
-	return fmt.Errorf("纪念日不存在: %s", ann.ID)
-}
 
 // Delete 删除纪念日
 func (s *JSONStore) Delete(id string) error {

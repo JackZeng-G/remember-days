@@ -49,33 +49,6 @@ func TestJSONStore_AddAndLoad(t *testing.T) {
 	}
 }
 
-func TestJSONStore_Update(t *testing.T) {
-	tmpDir := t.TempDir()
-	store := NewJSONStore(tmpDir)
-
-	ann := model.Anniversary{
-		ID:   "test1234",
-		Name: "Original",
-		Date: "2024-01-01",
-	}
-
-	store.Add(ann)
-
-	updated := model.Anniversary{
-		ID:   "test1234",
-		Name: "Updated",
-		Date: "2024-12-31",
-	}
-
-	if err := store.Update(updated); err != nil {
-		t.Fatalf("Update() error = %v", err)
-	}
-
-	anns, _ := store.Load()
-	if anns[0].Name != "Updated" {
-		t.Errorf("Name = %s, want Updated", anns[0].Name)
-	}
-}
 
 func TestJSONStore_Delete(t *testing.T) {
 	tmpDir := t.TempDir()

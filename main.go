@@ -1,7 +1,9 @@
 package main
 
 import (
+	"embed"
 	"fmt"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +18,9 @@ import (
 	"remember/internal/store"
 )
 
+//go:embed web/templates/*.html web/static/*
+var webAssets embed.FS
+
 func main() {
 	// 加载配置
 	cfg, err := config.Load()
@@ -26,7 +31,7 @@ func main() {
 	// 设置日志
 	logger := log.New(os.Stdout, "[ANNIVERSARY] ", log.LstdFlags)
 
-	// 设置工作目录：优先使用当前目录，仅编译二进制回退到可执行文件目录
+	// 设置工作目录：仅用于定位 data 目录
 	if _, err := os.Stat("web/templates"); os.IsNotExist(err) {
 		exePath, err := os.Executable()
 		if err != nil {
@@ -41,8 +46,8 @@ func main() {
 	// 初始化服务
 	svc := service.New(jsonStore)
 
-	// 初始化模板渲染器
-	tmpl, err := handler.NewTemplateRenderer("web/templates/*.html")
+	// 初始化模板渲染器（从嵌入资源加载）
+	tmpl, err := handler.NewTemplateRendererFromFS(webAssets)
 	if err != nil {
 		log.Fatalf("模板加载失败: %v", err)
 	}
@@ -56,13 +61,14 @@ func main() {
 	// 中间件链
 	r.Use(middleware.Recoverer)
 	r.Use(handler.LoggingMiddleware(logger))
-	r.Use(handler.CSRFMiddleware(cfg))
+	r.Use(handler.CSRFMiddleware())
 
 	// 注册路由
 	h.RegisterRoutes(r)
 
-	// 静态文件服务
-	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
+	// 静态文件服务（从嵌入资源）
+	staticFS, _ := fs.Sub(webAssets, "web/static")
+	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.FS(staticFS))))
 
 	// 启动服务器
 	addr := fmt.Sprintf(":%d", cfg.Port)

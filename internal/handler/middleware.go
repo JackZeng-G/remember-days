@@ -6,21 +6,21 @@ import (
 	"log"
 	"net/http"
 	"time"
-
-	"remember/internal/config"
 )
 
 const csrfCookieName = "csrf_token"
 
-// GenerateCSRFToken 生成 CSRF Token
-func GenerateCSRFToken() string {
+// generateCSRFToken 生成 CSRF Token
+func generateCSRFToken() string {
 	b := make([]byte, 32)
-	rand.Read(b)
+	if _, err := rand.Read(b); err != nil {
+		panic("crypto/rand.Read failed: " + err.Error())
+	}
 	return base64.URLEncoding.EncodeToString(b)
 }
 
-// SetCSRFCookie 设置 CSRF Cookie
-func SetCSRFCookie(w http.ResponseWriter, token string) {
+// setCSRFCookie 设置 CSRF Cookie
+func setCSRFCookie(w http.ResponseWriter, token string) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     csrfCookieName,
 		Value:    token,
@@ -52,15 +52,15 @@ func LoggingMiddleware(logger *log.Logger) func(http.Handler) http.Handler {
 }
 
 // CSRFMiddleware CSRF 保护中间件
-func CSRFMiddleware(cfg *config.Config) func(http.Handler) http.Handler {
+func CSRFMiddleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// GET/HEAD 请求：设置 CSRF Token
 			if r.Method == "GET" || r.Method == "HEAD" {
 				token, err := GetCSRFCookie(r)
 				if err != nil || token == "" {
-					token = GenerateCSRFToken()
-					SetCSRFCookie(w, token)
+					token = generateCSRFToken()
+					setCSRFCookie(w, token)
 				}
 				next.ServeHTTP(w, r)
 				return

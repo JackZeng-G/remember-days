@@ -12,11 +12,8 @@ RUN adduser -D -g '' appuser
 
 WORKDIR /app
 
-# 复制预编译的二进制文件
+# 复制预编译的二进制文件（内含嵌入资源）
 COPY build/remember .
-
-# 复制静态资源
-COPY web/ ./web/
 
 # 复制数据目录（如需初始数据）
 COPY data/ ./data/
