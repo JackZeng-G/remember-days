@@ -10,9 +10,7 @@ import (
 type Config struct {
     Port          int    `env:"PORT" envDefault:"8080"`
     DataDir       string `env:"DATA_DIR" envDefault:"data"`
-    LogLevel      string `env:"LOG_LEVEL" envDefault:"info"`
     CSRFKey       string `env:"CSRF_KEY" envDefault:"change-me-in-production-csrf"`
-    SessionSecret string `env:"SESSION_SECRET" envDefault:"change-me-in-production-session"`
 }
 
 // Load 从环境变量加载配置

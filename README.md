@@ -1,146 +1,91 @@
-# Remember Days - 纪念日管理应用
+<div align="center">
 
-一个简洁的纪念日管理 Web 应用，帮助你记住每一个重要的日子。
+# 🕯️ Remember Days
 
-## 项目结构
+**记录生命中每一个珍贵的时刻**
 
-```
-remember-days/
-├── cmd/
-│   └── server/
-│       └── main.go          # 入口点
-├── internal/
-│   ├── config/
-│   │   └── config.go        # 配置管理
-│   ├── handler/
-│   │   ├── handler.go       # HTTP 处理器
-│   │   ├── middleware.go    # 中间件
-│   │   └ template.go        # 模板渲染器
-│   ├── model/
-│   │   └ anniversary.go     # 数据模型
-│   ├── service/
-│   │   ├── anniversary.go   # 业务逻辑
-│   │   ├── errors.go        # 业务错误
-│   │   └ validation.go      # 输入验证
-│   └── store/
-│   │   ├── store.go         # 存储接口
-│   │   ├── json_store.go    # JSON 文件实现
-│   │   └ memory_store.go    # 内存实现（用于测试）
-├── web/
-│   ├── templates/           # HTML 模板
-│   └ static/                # 静态资源
-├── data/                    # 数据文件（运行时）
-├── docs/                    # 文档
-├── go.mod
-├── go.sum
-└── README.md
-```
+一个温馨优雅的纪念日管理 Web 应用
 
-## 运行
+[![Go](https://img.shields.io/badge/Go-1.22-00ADD8?style=flat-square&logo=go)](https://go.dev/)
+[![License](https://img.shields.io/badge/License-GPL--3.0-d4846a?style=flat-square)](LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-Alpine-0db7ed?style=flat-square&logo=docker)](Dockerfile)
+
+</div>
+
+---
+
+## ✨ 特性
+
+- 温馨优雅的 UI 设计，时间线卡片布局
+- 倒计时提醒，临近纪念日自动高亮
+- CSRF 防护 · XSS 防御 · 数据文件加密存储
+- 单二进制部署，Docker 一键启动
+
+## 🚀 快速开始
 
 ```bash
-# 直接运行
-go run ./cmd/server
-
-# 或编译后运行
-go build -o anniversary.exe ./cmd/server
-./anniversary.exe
+go run .
 ```
 
-访问 `http://localhost:8080`
+打开 `http://localhost:8080` 即可使用。
 
-## Docker 部署
-
-使用预编译方式部署，镜像基于 Alpine，体积小、启动快。
-
-### 快速部署
+## 🐳 Docker 部署
 
 ```bash
-# Windows PowerShell
-./build.ps1
-docker compose up -d
-
-# Linux/Mac
-chmod +x build.sh && ./build.sh
-docker compose up -d
+# 编译 + 构建 + 启动
+GOOS=linux GOARCH=amd64 go build -o build/remember .
+docker compose up -d --build
 ```
 
-### 手动步骤
+**运维**
 
 ```bash
-# 1. 编译 Linux 二进制文件
-GOOS=linux GOARCH=amd64 go build -o server ./cmd/server
-
-# 2. 构建镜像
-docker compose build
-
-# 3. 启动服务
-docker compose up -d
-```
-
-### 配置
-
-通过环境变量或 `.env` 文件配置：
-
-| 变量 | 说明 | 默认值 |
-|------|------|--------|
-| `CSRF_KEY` | CSRF 密钥 | 生产环境必须修改 |
-| `SESSION_SECRET` | Session 密钥 | 生产环境必须修改 |
-| `PORT` | 服务端口 | `8080` |
-| `LOG_LEVEL` | 日志级别 | `info` |
-
-### 运维命令
-
-```bash
-docker compose logs -f        # 查看日志
-docker compose restart        # 重启服务
-docker compose down           # 停止服务
-docker compose up -d --build  # 重新构建并启动
+docker compose logs -f         # 日志
+docker compose restart         # 重启
+docker compose down            # 停止
 ```
 
 数据持久化在 `./data` 目录。
 
-## 环境变量
-
-通过环境变量配置：
+## ⚙️ 配置
 
 | 变量 | 说明 | 默认值 |
-|------|------|--------|
+| :--- | :--- | :--- |
 | `PORT` | 服务端口 | `8080` |
 | `DATA_DIR` | 数据目录 | `data` |
-| `LOG_LEVEL` | 日志级别 | `info` |
-| `CSRF_KEY` | CSRF 密钥 | （生产环境请修改） |
+| `CSRF_KEY` | CSRF 密钥 | ⚠️ 生产环境必须修改 |
 
-## API
+## 📡 API
 
-- `GET /api/reminders` - 获取所有纪念日
-- `GET /api/status` - 服务状态
+| 方法 | 路径 | 说明 |
+| :--- | :--- | :--- |
+| `GET` | `/api/reminders` | 获取所有纪念日 |
+| `GET` | `/api/status` | 服务状态 |
 
-## 测试
+## 🛠 开发
 
 ```bash
-go test ./... -v
-go test -cover ./...
+go test ./... -v          # 运行测试
+go test -cover ./...      # 覆盖率
 ```
 
-## 安全特性
+## 📁 项目结构
 
-- CSRF 保护（所有表单）
-- XSS 防护（模板自动转义）
-- 文件权限 0600（数据文件）
-- 日志输入清理
+```
+├── main.go               # 入口
+├── internal/             # 后端（Go 语言约定）
+│   ├── config/           #   配置
+│   ├── handler/          #   路由与中间件
+│   ├── model/            #   数据模型
+│   ├── service/          #   业务逻辑
+│   └── store/            #   存储层
+├── web/                  # 前端
+│   ├── templates/        #   HTML 模板
+│   └── static/           #   样式
+├── Dockerfile
+└── docker-compose.yml
+```
 
-## 技术栈
+## 📄 许可证
 
-- Go 1.21+
-- chi router
-- caarlos0/env 配置库
-
-## 许可证
-
-本项目采用 [GNU General Public License v3.0](LICENSE) 许可证。
-
-你可以自由使用、修改和分发本软件，但必须：
-- 保留原作者的版权声明
-- 以相同许可证发布修改后的版本
-- 明确标注所有修改内容
+[GPL-3.0](LICENSE) © Remember Days

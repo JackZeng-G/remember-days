@@ -17,9 +17,6 @@ func TestLoad_Defaults(t *testing.T) {
 	if cfg.DataDir != "data" {
 		t.Errorf("DataDir = %s, want data", cfg.DataDir)
 	}
-	if cfg.LogLevel != "info" {
-		t.Errorf("LogLevel = %s, want info", cfg.LogLevel)
-	}
 }
 
 func TestLoad_FromEnv(t *testing.T) {
