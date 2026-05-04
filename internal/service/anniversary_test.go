@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"anniversary/internal/store"
+	"remember/internal/store"
 )
 
 func TestAnniversaryService_Create(t *testing.T) {

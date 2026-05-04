@@ -6,8 +6,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"anniversary/internal/model"
-	"anniversary/internal/store"
+	"remember/internal/model"
+	"remember/internal/store"
 )
 
 // AnniversaryService 服务接口

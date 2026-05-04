@@ -1,6 +1,6 @@
 package store
 
-import "anniversary/internal/model"
+import "remember/internal/model"
 
 // AnniversaryStore 存储接口
 type AnniversaryStore interface {

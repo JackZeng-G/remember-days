@@ -1,4 +1,4 @@
-module anniversary
+module remember
 
 go 1.22
 

@@ -10,10 +10,10 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
-	"anniversary/internal/config"
-	"anniversary/internal/handler"
-	"anniversary/internal/service"
-	"anniversary/internal/store"
+	"remember/internal/config"
+	"remember/internal/handler"
+	"remember/internal/service"
+	"remember/internal/store"
 )
 
 func main() {
@@ -26,13 +26,14 @@ func main() {
 	// 设置日志
 	logger := log.New(os.Stdout, "[ANNIVERSARY] ", log.LstdFlags)
 
-	// 获取程序所在目录
-	exePath, err := os.Executable()
-	if err != nil {
-		logger.Printf("获取程序路径失败: %v", err)
+	// 设置工作目录：优先使用当前目录，仅编译二进制回退到可执行文件目录
+	if _, err := os.Stat("web/templates"); os.IsNotExist(err) {
+		exePath, err := os.Executable()
+		if err != nil {
+			log.Fatalf("获取程序路径失败: %v", err)
+		}
+		os.Chdir(filepath.Dir(exePath))
 	}
-	exeDir := filepath.Dir(exePath)
-	os.Chdir(exeDir)
 
 	// 初始化存储
 	jsonStore := store.NewJSONStore(cfg.DataDir)

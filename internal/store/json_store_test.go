@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"anniversary/internal/model"
+	"remember/internal/model"
 )
 
 func TestJSONStore_Load_Empty(t *testing.T) {
@@ -116,7 +116,7 @@ func TestJSONStore_FilePermission(t *testing.T) {
 
 	store.Add(ann)
 
-	filePath := filepath.Join(tmpDir, "anniversaries.json")
+	filePath := filepath.Join(tmpDir, "remembers.json")
 	info, err := os.Stat(filePath)
 	if err != nil {
 		t.Fatalf("Stat() error = %v", err)

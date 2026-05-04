@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"anniversary/internal/model"
+	"remember/internal/model"
 )
 
 // MemoryStore 内存存储实现，用于测试

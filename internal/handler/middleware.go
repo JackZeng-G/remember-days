@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"anniversary/internal/config"
+	"remember/internal/config"
 )
 
 const csrfCookieName = "csrf_token"

@@ -10,8 +10,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"anniversary/internal/service"
-	"anniversary/internal/store"
+	"remember/internal/service"
+	"remember/internal/store"
 )
 
 func setupTestHandler() (*chi.Mux, error) {

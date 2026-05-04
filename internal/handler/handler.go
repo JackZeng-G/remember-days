@@ -9,7 +9,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"anniversary/internal/service"
+	"remember/internal/service"
 )
 
 // Handler HTTP处理器

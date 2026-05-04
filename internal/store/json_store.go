@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"anniversary/internal/model"
+	"remember/internal/model"
 )
 
 // JSONStore JSON文件存储实现
@@ -19,7 +19,7 @@ type JSONStore struct {
 // NewJSONStore 创建新的JSON存储
 func NewJSONStore(dataDir string) *JSONStore {
 	return &JSONStore{
-		filePath: filepath.Join(dataDir, "anniversaries.json"),
+		filePath: filepath.Join(dataDir, "remembers.json"),
 	}
 }
 
@@ -39,14 +39,14 @@ func (s *JSONStore) Load() ([]model.Anniversary, error) {
 	}
 
 	var storage struct {
-		Anniversaries []model.Anniversary `json:"anniversaries"`
+		Remembers []model.Anniversary `json:"remembers"`
 	}
 
 	if err := json.Unmarshal(data, &storage); err != nil {
 		return nil, fmt.Errorf("解析数据失败: %w", err)
 	}
 
-	return storage.Anniversaries, nil
+	return storage.Remembers, nil
 }
 
 // Save 保存所有纪念日
@@ -61,9 +61,9 @@ func (s *JSONStore) Save(anniversaries []model.Anniversary) error {
 	}
 
 	storage := struct {
-		Anniversaries []model.Anniversary `json:"anniversaries"`
+		Remembers []model.Anniversary `json:"remembers"`
 	}{
-		Anniversaries: anniversaries,
+		Remembers: anniversaries,
 	}
 
 	data, err := json.MarshalIndent(storage, "", "  ")
