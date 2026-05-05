@@ -64,13 +64,15 @@ func GetUserID(r *http.Request) string {
 	return ""
 }
 
-// LoggingMiddleware 日志中间件
+// LoggingMiddleware 日志中间件（跳过静态资源和频繁请求）
 func LoggingMiddleware(logger *log.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			start := time.Now()
 			next.ServeHTTP(w, r)
-			logger.Printf("%s %s %v", r.Method, r.URL.Path, time.Since(start))
+			if !strings.HasPrefix(r.URL.Path, "/static/") && !strings.HasPrefix(r.URL.Path, "/api/") {
+				logger.Printf("%s %s %v", r.Method, r.URL.Path, time.Since(start))
+			}
 		})
 	}
 }

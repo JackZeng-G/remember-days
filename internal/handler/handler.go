@@ -100,7 +100,6 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.session.CreateSession(w, user.ID)
-	h.logger.Printf("用户登录: %s", user.Username)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -146,7 +145,6 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.session.CreateSession(w, user.ID)
-	h.logger.Printf("用户注册: %s", user.Username)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -219,7 +217,6 @@ func (h *Handler) Add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.logger.Printf("添加纪念日: %s (%s)", service.SanitizeForLog(name), date)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -280,7 +277,6 @@ func (h *Handler) Edit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.logger.Printf("编辑纪念日: %s (%s)", service.SanitizeForLog(name), date)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -294,7 +290,6 @@ func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.logger.Printf("删除纪念日: %s", id)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -375,7 +370,6 @@ func (h *Handler) AdminDeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.logger.Printf("管理员删除用户: %s", targetID)
 	http.Redirect(w, r, "/admin", http.StatusSeeOther)
 }
 
