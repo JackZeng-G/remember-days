@@ -15,11 +15,11 @@ WORKDIR /app
 # 复制预编译的二进制文件（内含嵌入资源）
 COPY build/remember .
 
-# 复制数据目录（如需初始数据）
-COPY data/ ./data/
+# 创建数据目录
+RUN mkdir -p ./data
 
 # 设置权限
-RUN chown -R appuser:appuser /app
+RUN chmod +x ./remember && chown -R appuser:appuser /app
 
 USER appuser
 
@@ -28,7 +28,7 @@ EXPOSE 8080
 
 # 健康检查
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1
+    CMD wget --quiet --tries=1 --spider http://localhost:8080/ 2>/dev/null || exit 1
 
 # 启动服务
 CMD ["./remember"]

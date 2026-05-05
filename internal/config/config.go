@@ -10,6 +10,7 @@ import (
 type Config struct {
     Port          int    `env:"PORT" envDefault:"8080"`
     DataDir       string `env:"DATA_DIR" envDefault:"data"`
+    SessionSecret string `env:"SESSION_SECRET" envDefault:"change-me-in-production-session-secret"`
 }
 
 // Load 从环境变量加载配置

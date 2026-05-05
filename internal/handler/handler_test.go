@@ -15,54 +15,31 @@ import (
 	"remember/internal/store"
 )
 
-func setupTestHandler() (*chi.Mux, error) {
+const testUserID = "test0001"
+
+func setupTestHandler() (*chi.Mux, *service.SessionManager, error) {
 	memStore := store.NewMemoryStore()
-	svc := service.New(memStore)
+	annSvc := service.New(memStore)
 
 	webFS := os.DirFS("../..")
 	tmpl, err := NewTemplateRendererFromFS(webFS)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
+	sessionMgr := service.NewSessionManager("test-secret-key-32chars-long-enough")
+
 	logger := log.New(io.Discard, "", 0)
-	h := New(svc, tmpl, logger)
+	h := New(annSvc, nil, sessionMgr, tmpl, logger)
 
 	r := chi.NewRouter()
 	h.RegisterRoutes(r)
 
-	return r, nil
-}
-
-func TestHandler_APIReminders(t *testing.T) {
-	r, err := setupTestHandler()
-	if err != nil {
-		t.Fatalf("Setup failed: %v", err)
-	}
-
-	// Create a test anniversary first
-	req := httptest.NewRequest(http.MethodPost, "/add", strings.NewReader("name=Test&year=2024&month=01&day=01&description=Test"))
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-
-	// Now test API
-	req = httptest.NewRequest(http.MethodGet, "/api/reminders", nil)
-	w = httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("Status = %d, want 200", w.Code)
-	}
-
-	contentType := w.Header().Get("Content-Type")
-	if !strings.Contains(contentType, "application/json") {
-		t.Errorf("Content-Type = %s, want application/json", contentType)
-	}
+	return r, sessionMgr, nil
 }
 
 func TestHandler_APIStatus(t *testing.T) {
-	r, err := setupTestHandler()
+	r, _, err := setupTestHandler()
 	if err != nil {
 		t.Fatalf("Setup failed: %v", err)
 	}
@@ -73,5 +50,50 @@ func TestHandler_APIStatus(t *testing.T) {
 
 	if w.Code != http.StatusOK {
 		t.Errorf("Status = %d, want 200", w.Code)
+	}
+}
+
+func TestHandler_APIReminders_RequiresAuth(t *testing.T) {
+	r, _, err := setupTestHandler()
+	if err != nil {
+		t.Fatalf("Setup failed: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/reminders", nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("Status = %d, want 401", w.Code)
+	}
+}
+
+func TestHandler_APIReminders_WithAuth(t *testing.T) {
+	r, sessionMgr, err := setupTestHandler()
+	if err != nil {
+		t.Fatalf("Setup failed: %v", err)
+	}
+
+	// 创建一个带 session cookie 的请求
+	req := httptest.NewRequest(http.MethodGet, "/api/reminders", nil)
+	w := httptest.NewRecorder()
+	sessionMgr.CreateSession(w, testUserID)
+
+	// 从响应中提取 cookie 并设置到下一个请求
+	cookies := w.Result().Cookies()
+	for _, c := range cookies {
+		req.AddCookie(c)
+	}
+
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Status = %d, want 200", w.Code)
+	}
+
+	contentType := w.Header().Get("Content-Type")
+	if !strings.Contains(contentType, "application/json") {
+		t.Errorf("Content-Type = %s, want application/json", contentType)
 	}
 }

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 · 纪念日</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="page-background">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+        <div class="grain-overlay"></div>
+    </div>
+
+    <div class="container container-small">
+        <header class="form-header">
+            <div class="form-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </div>
+            <h1 class="form-title">登录</h1>
+            <p class="form-subtitle">欢迎回来</p>
+        </header>
+
+        <form action="/login" method="POST" class="form">
+            <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+
+            {{if .Error}}<div class="form-error">{{.Error}}</div>{{end}}
+
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <span class="label-text">用户名</span>
+                        <span class="label-badge label-required">必填</span>
+                    </label>
+                    <input type="text" id="username" name="username" required
+                           placeholder="请输入用户名"
+                           class="form-input" value="{{.Username}}" autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <span class="label-text">密码</span>
+                        <span class="label-badge label-required">必填</span>
+                    </label>
+                    <input type="password" id="password" name="password" required
+                           placeholder="请输入密码"
+                           class="form-input">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-block">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                    </svg>
+                    登录
+                </button>
+            </div>
+        </form>
+
+        <div class="auth-footer">
+            还没有账号？<a href="/register">注册</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,16 +1,24 @@
 package handler
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/base64"
 	"log"
 	"net/http"
+	"strings"
 	"time"
+
+	"remember/internal/service"
 )
+
+type contextKey string
+
+const ctxUserIDKey contextKey = "user_id"
+const ctxCSRFKey contextKey = "csrf_token"
 
 const csrfCookieName = "csrf_token"
 
-// generateCSRFToken 生成 CSRF Token
 func generateCSRFToken() string {
 	b := make([]byte, 32)
 	if _, err := rand.Read(b); err != nil {
@@ -19,7 +27,6 @@ func generateCSRFToken() string {
 	return base64.URLEncoding.EncodeToString(b)
 }
 
-// setCSRFCookie 设置 CSRF Cookie
 func setCSRFCookie(w http.ResponseWriter, token string) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     csrfCookieName,
@@ -31,13 +38,30 @@ func setCSRFCookie(w http.ResponseWriter, token string) {
 	})
 }
 
-// GetCSRFCookie 获取 CSRF Cookie
 func GetCSRFCookie(r *http.Request) (string, error) {
 	cookie, err := r.Cookie(csrfCookieName)
 	if err != nil {
 		return "", err
 	}
 	return cookie.Value, nil
+}
+
+// GetCSRFToken 获取 CSRF token（优先从 context，fallback 从 cookie）
+func GetCSRFToken(r *http.Request) string {
+	if v, ok := r.Context().Value(ctxCSRFKey).(string); ok && v != "" {
+		return v
+	}
+	if v, err := GetCSRFCookie(r); err == nil && v != "" {
+		return v
+	}
+	return ""
+}
+
+func GetUserID(r *http.Request) string {
+	if v, ok := r.Context().Value(ctxUserIDKey).(string); ok {
+		return v
+	}
+	return ""
 }
 
 // LoggingMiddleware 日志中间件
@@ -55,18 +79,17 @@ func LoggingMiddleware(logger *log.Logger) func(http.Handler) http.Handler {
 func CSRFMiddleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			// GET/HEAD 请求：设置 CSRF Token
 			if r.Method == "GET" || r.Method == "HEAD" {
 				token, err := GetCSRFCookie(r)
 				if err != nil || token == "" {
 					token = generateCSRFToken()
 					setCSRFCookie(w, token)
 				}
-				next.ServeHTTP(w, r)
+				ctx := context.WithValue(r.Context(), ctxCSRFKey, token)
+					next.ServeHTTP(w, r.WithContext(ctx))
 				return
 			}
 
-			// POST/PUT/DELETE 请求：验证 CSRF Token
 			cookieToken, err := GetCSRFCookie(r)
 			if err != nil {
 				http.Error(w, "CSRF Token Missing", http.StatusForbidden)
@@ -83,6 +106,41 @@ func CSRFMiddleware() func(http.Handler) http.Handler {
 				return
 			}
 
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
+// AuthMiddleware 认证中间件
+func AuthMiddleware(sessionMgr *service.SessionManager) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			userID, err := sessionMgr.GetSession(r)
+			if err != nil || userID == "" {
+				if strings.HasPrefix(r.URL.Path, "/api/") {
+					http.Error(w, "Unauthorized", http.StatusUnauthorized)
+					return
+				}
+				http.Redirect(w, r, "/login", http.StatusSeeOther)
+				return
+			}
+
+			ctx := context.WithValue(r.Context(), ctxUserIDKey, userID)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
+}
+
+// AdminMiddleware 管理员中间件
+func AdminMiddleware(userSvc service.UserService) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			userID := GetUserID(r)
+			user, err := userSvc.GetByID(userID)
+			if err != nil || !user.IsAdmin {
+				http.Error(w, "Forbidden", http.StatusForbidden)
+				return
+			}
 			next.ServeHTTP(w, r)
 		})
 	}

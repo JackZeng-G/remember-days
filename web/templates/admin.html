@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理 · 纪念日</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="page-background">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+        <div class="grain-overlay"></div>
+    </div>
+
+    <div class="admin-container">
+        <nav class="back-nav">
+            <a href="/" class="back-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>返回首页</span>
+            </a>
+        </nav>
+
+        <div class="admin-header">
+            <h1 class="admin-title">用户管理</h1>
+        </div>
+
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>用户名</th>
+                    <th>角色</th>
+                    <th>注册时间</th>
+                    <th>纪念日数</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Users}}
+                <tr>
+                    <td>{{.Username}}</td>
+                    <td>
+                        {{if .IsAdmin}}<span class="badge-admin">管理员</span>{{end}}
+                    </td>
+                    <td>{{.CreatedAt}}</td>
+                    <td>{{.Count}}</td>
+                    <td>
+                        {{if eq .ID $.CurrentID}}
+                            <span class="badge-current">当前用户</span>
+                        {{else}}
+                            <form action="/admin/users/{{.ID}}/delete" method="POST" style="display:inline">
+                                <input type="hidden" name="_csrf" value="{{$.CSRFToken}}">
+                                <button type="submit" class="btn-delete-sm" onclick="return confirm('确定要删除用户「{{.Username}}」吗？')">删除</button>
+                            </form>
+                        {{end}}
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <span class="footer-icon">♡</span>
+            <span class="footer-text">纪念日提醒</span>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('loaded');
+        });
+    </script>
+</body>
+</html>

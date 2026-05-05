@@ -168,7 +168,8 @@ body.loaded {
 }
 
 .container-small {
-    max-width: 460px;
+    max-width: 520px;
+    margin-top: 8vh;
 }
 
 /* ────────────────────────────────────────────────────────────────── */
@@ -535,75 +536,6 @@ body.loaded {
 .card-actions-inline .btn-delete svg {
     width: 16px;
     height: 16px;
-}
-
-/* ────────────────────────────────────────────────────────────────── */
-/* Card Footer                                                        */
-/* ────────────────────────────────────────────────────────────────── */
-.card-footer {
-    display: flex;
-    justify-content: center;
-    margin-top: var(--space-md);
-    padding-top: var(--space-md);
-    border-top: 1px solid var(--border-light);
-}
-
-.card-footer-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-}
-
-.delete-form {
-    display: inline-block;
-    margin: 0;
-}
-
-.btn-delete, .btn-edit {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs);
-    padding: 6px 14px;
-    font-size: 13px;
-    border-radius: var(--radius-sm);
-    text-decoration: none;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.btn-delete {
-    background: transparent;
-    border: 1px solid var(--border-medium);
-    color: var(--text-muted);
-    font-family: var(--font-sans);
-}
-
-.btn-delete:hover {
-    color: var(--today-primary);
-    border-color: var(--today-primary);
-    background: rgba(192, 86, 70, 0.05);
-}
-
-.btn-edit {
-    background: transparent;
-    border: 1px solid var(--border-medium);
-    color: var(--text-muted);
-}
-
-.btn-edit:hover {
-    color: var(--accent-warm);
-    border-color: var(--accent-warm);
-    background: rgba(212, 132, 106, 0.05);
-}
-
-.btn-delete svg, .btn-edit svg {
-    width: 14px;
-    height: 14px;
-    opacity: 0.7;
-}
-
-.btn-delete:hover svg, .btn-edit:hover svg {
-    opacity: 1;
 }
 
 /* ────────────────────────────────────────────────────────────────── */
@@ -1001,18 +933,15 @@ body.loaded {
     gap: var(--space-md);
 }
 
+.form-group-year {
+    flex: 2;
+    min-width: 0;
+}
+
 .form-group-month,
 .form-group-day {
     flex: 1;
-}
-
-.form-row-three {
-    display: flex;
-    gap: var(--space-md);
-}
-
-.form-group-year {
-    flex: 0 0 100px;
+    min-width: 90px;
 }
 
 /* ────────────────────────────────────────────────────────────────── */
@@ -1164,4 +1093,156 @@ body.loaded {
     .orb-1, .orb-2, .orb-3 {
         opacity: 0.3;
     }
+}
+
+/* ─── User Navigation ─── */
+.user-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) var(--space-lg);
+    margin-bottom: var(--space-md);
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xs);
+}
+
+.user-greeting {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.user-nav-links {
+    display: flex;
+    gap: var(--space-lg);
+}
+
+.nav-link {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.nav-link:hover {
+    color: var(--accent-warm);
+}
+
+/* ─── Form Error ─── */
+.form-error {
+    background: rgba(192, 86, 70, 0.08);
+    color: var(--today-primary);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    margin-bottom: var(--space-md);
+    text-align: center;
+    font-family: 'Noto Sans SC', sans-serif;
+}
+
+/* ─── Auth Links ─── */
+.auth-footer {
+    text-align: center;
+    margin-top: var(--space-lg);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.auth-footer a {
+    color: var(--accent-warm);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-footer a:hover {
+    color: var(--accent-rose);
+}
+
+/* ─── Admin Panel ─── */
+.admin-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-xl);
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-xl);
+}
+
+.admin-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-table th {
+    background: var(--bg-secondary);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: 500;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    padding: var(--space-md);
+    text-align: left;
+}
+
+.admin-table td {
+    padding: var(--space-md);
+    border-top: 1px solid var(--border-light);
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+.badge-admin {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--accent-cream);
+    color: var(--accent-warm);
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-family: 'Noto Sans SC', sans-serif;
+}
+
+.badge-current {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: rgba(212, 132, 106, 0.1);
+    color: var(--accent-warm);
+    font-size: 0.75rem;
+    font-family: 'Noto Sans SC', sans-serif;
+}
+
+.btn-delete-sm {
+    padding: 4px 12px;
+    border: 1px solid var(--today-primary);
+    background: transparent;
+    color: var(--today-primary);
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: 'Noto Sans SC', sans-serif;
+}
+
+.btn-delete-sm:hover {
+    background: var(--today-primary);
+    color: white;
 }

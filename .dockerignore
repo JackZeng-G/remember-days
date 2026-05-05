@@ -1,5 +1,6 @@
-build/
 .git/
 .gitignore
 *.md
+*.exe
+data/
 docs/

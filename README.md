@@ -6,7 +6,7 @@
 
 一个温馨优雅的纪念日管理 Web 应用
 
-[![Go](https://img.shields.io/badge/Go-1.22-00ADD8?style=flat-square&logo=go)](https://go.dev/)
+[![Go](https://img.shields.io/badge/Go-1.25-00ADD8?style=flat-square&logo=go)](https://go.dev/)
 [![License](https://img.shields.io/badge/License-GPL--3.0-d4846a?style=flat-square)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Alpine-0db7ed?style=flat-square&logo=docker)](Dockerfile)
 
@@ -18,7 +18,8 @@
 
 - 温馨优雅的 UI 设计，时间线卡片布局
 - 倒计时提醒，临近纪念日自动高亮
-- CSRF 防护 · XSS 防御 · 数据文件加密存储
+- CSRF 防护 · XSS 防御 · HMAC Session 认证
+- SQLite 存储 · 多用户隔离 · 管理员后台
 - 单二进制部署，资源内嵌，无外部依赖
 
 ## 🚀 快速开始
@@ -44,7 +45,7 @@ docker compose restart         # 重启
 docker compose down            # 停止
 ```
 
-数据持久化在 `./data` 目录。
+数据持久化在 `./data/remember.db`（SQLite）。
 
 ## ⚙️ 配置
 
@@ -52,7 +53,7 @@ docker compose down            # 停止
 | :--- | :--- | :--- |
 | `PORT` | 服务端口 | `8080` |
 | `DATA_DIR` | 数据目录 | `data` |
-| `CSRF_KEY` | CSRF 密钥 | ⚠️ 生产环境必须修改 |
+| `SESSION_SECRET` | Session 签名密钥 | ⚠️ 生产环境必须修改 |
 
 ## 📡 API
 
