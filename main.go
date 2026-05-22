@@ -51,12 +51,11 @@ func main() {
 	}
 
 	// Handler
-	h := handler.New(annSvc, userSvc, sessionMgr, tmpl, logger)
+	h := handler.New(annSvc, userSvc, sessionMgr, tmpl)
 
 	// 路由
 	r := chi.NewRouter()
 	r.Use(middleware.Recoverer)
-	r.Use(handler.LoggingMiddleware(logger))
 	r.Use(handler.CSRFMiddleware())
 
 	h.RegisterRoutes(r)

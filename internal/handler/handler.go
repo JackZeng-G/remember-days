@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -18,17 +17,15 @@ type Handler struct {
 	userSvc service.UserService
 	session *service.SessionManager
 	tmpl    *TemplateRenderer
-	logger  *log.Logger
 }
 
 // New 创建新的 Handler
-func New(svc service.AnniversaryService, userSvc service.UserService, session *service.SessionManager, tmpl *TemplateRenderer, logger *log.Logger) *Handler {
+func New(svc service.AnniversaryService, userSvc service.UserService, session *service.SessionManager, tmpl *TemplateRenderer) *Handler {
 	return &Handler{
 		service: svc,
 		userSvc: userSvc,
 		session: session,
 		tmpl:    tmpl,
-		logger:  logger,
 	}
 }
 
@@ -182,7 +179,6 @@ func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.tmpl.ExecuteTemplate(w, "index.html", data); err != nil {
-		h.logger.Printf("模板渲染失败: %v", err)
 	}
 }
 
@@ -192,7 +188,6 @@ func (h *Handler) AddForm(w http.ResponseWriter, r *http.Request) {
 		"CSRFToken": csrfToken,
 	}
 	if err := h.tmpl.ExecuteTemplate(w, "add.html", data); err != nil {
-		h.logger.Printf("模板渲染失败: %v", err)
 	}
 }
 
@@ -251,7 +246,6 @@ func (h *Handler) EditForm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.tmpl.ExecuteTemplate(w, "edit.html", data); err != nil {
-		h.logger.Printf("模板渲染失败: %v", err)
 	}
 }
 
@@ -357,7 +351,6 @@ func (h *Handler) AdminUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.tmpl.ExecuteTemplate(w, "admin.html", data); err != nil {
-		h.logger.Printf("模板渲染失败: %v", err)
 	}
 }
 
@@ -374,6 +367,5 @@ func (h *Handler) AdminDeleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) handleError(w http.ResponseWriter, err error, statusCode int) {
-	h.logger.Printf("错误: %v", err)
 	http.Error(w, http.StatusText(statusCode), statusCode)
 }

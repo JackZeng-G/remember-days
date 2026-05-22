@@ -37,9 +37,3 @@ func ValidateDate(date string) error {
 	return ErrInvalidDate
 }
 
-// SanitizeForLog 清理日志输入
-func SanitizeForLog(s string) string {
-	s = strings.ReplaceAll(s, "\n", " ")
-	s = strings.ReplaceAll(s, "\r", " ")
-	return strings.TrimSpace(s)
-}

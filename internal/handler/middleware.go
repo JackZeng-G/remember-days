@@ -4,10 +4,8 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
-	"log"
 	"net/http"
 	"strings"
-	"time"
 
 	"remember/internal/service"
 )
@@ -62,19 +60,6 @@ func GetUserID(r *http.Request) string {
 		return v
 	}
 	return ""
-}
-
-// LoggingMiddleware 日志中间件（跳过静态资源和频繁请求）
-func LoggingMiddleware(logger *log.Logger) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			start := time.Now()
-			next.ServeHTTP(w, r)
-			if !strings.HasPrefix(r.URL.Path, "/static/") && !strings.HasPrefix(r.URL.Path, "/api/") {
-				logger.Printf("%s %s %v", r.Method, r.URL.Path, time.Since(start))
-			}
-		})
-	}
 }
 
 // CSRFMiddleware CSRF 保护中间件

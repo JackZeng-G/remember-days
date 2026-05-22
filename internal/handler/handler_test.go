@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"io"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -29,8 +27,7 @@ func setupTestHandler() (*chi.Mux, *service.SessionManager, error) {
 
 	sessionMgr := service.NewSessionManager("test-secret-key-32chars-long-enough")
 
-	logger := log.New(io.Discard, "", 0)
-	h := New(annSvc, nil, sessionMgr, tmpl, logger)
+	h := New(annSvc, nil, sessionMgr, tmpl)
 
 	r := chi.NewRouter()
 	h.RegisterRoutes(r)
